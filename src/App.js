@@ -6,6 +6,7 @@ import emailpngPath from "./components/assets/email.png";
 import passwordpngPath from "./components/assets/password.png";
 import showpasswordpngPath from "./components/assets/showpassword.png";
 import checkboxpngPath from "./components/assets/checkbox.png";
+import callsvgPath from "./components/assets/call.svg";
 
 const LogoWrap = styled.div`
   display: flex;
@@ -68,9 +69,17 @@ const LoginMethodContentWrap = styled.div`
   }
 
   .phone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
   }
 
   .qrcode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
   }
 `;
 
@@ -92,6 +101,7 @@ const EmailInputBox = styled.input`
   font-weight: 600;
   color: #111;
   padding-left: 14px;
+
   &::placeholder {
     color: #ccc;
     font-size: 14px;
@@ -273,6 +283,94 @@ const CopyrightText = styled.p`
   margin-bottom: 0px;
 `;
 
+const EnterPhoneWrap = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+`;
+
+const EnterPhoneText = styled.p`
+  color: #454f5b;
+  font-size: 14px;
+  width: 447px;
+  margin-bottom: 15px;
+`;
+
+const PhoneNumberInputWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const PhoneNumberInputBox = styled.div`
+  width: 447px;
+  height: 44px;
+  border: 1px solid #c4cdd5;
+  display: flex;
+  align-items: center;
+  border-radius: 5px;
+`;
+
+const PhoneNumberIconBox = styled.div`
+  width: 44px;
+  height: 44px;
+  border-radius: 5px;
+  background-image: url(${callsvgPath});
+  background-size: 16px;
+  background-position: center;
+  background-repeat: no-repeat;
+`;
+
+const PhoneNumberInput = styled.input`
+  width: 403px;
+  height: 42px;
+  border: none;
+  color: #212b36;
+  &::placeholder {
+    color: #ccc;
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: normal;
+  }
+  &:focus {
+    border: 1px solid #346aff;
+    border-radius: 5px;
+    outline: 3px solid #eaf0ff;
+  }
+`;
+
+const PhoneNumberLoginButtonWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 15px;
+`;
+
+const SendCodeButton = styled.button`
+  width: 448px;
+  height: 44px;
+  background-color: #346aff;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  font-weight: 700;
+`;
+
+const QRCodeLoginTextWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const QRCodeLoginQRWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 function App() {
   const [activeMethod, setActiveMethod] = useState("email");
 
@@ -321,7 +419,8 @@ function App() {
             </DisplayWrap>
             <CoupangBizSignUpWrap>
               <CoupangBizAskingText>
-                법인 고객이신가요? <br></br>사업자 회원으로 전용 특가 혜택을 누려보세요.
+                법인 고객이신가요? <br />
+                사업자 회원으로 전용 특가 혜택을 누려보세요.
               </CoupangBizAskingText>
               <CoupangBizSignUpText>쿠팡비즈 간편가입 ></CoupangBizSignUpText>
             </CoupangBizSignUpWrap>
@@ -330,7 +429,34 @@ function App() {
             </CopyrightWrap>
           </div>
         )}
-        {activeMethod === "phone" && <div className="phone"></div>}
+        {activeMethod === "phone" && (
+          <div className="phone">
+            <EnterPhoneWrap>
+              <EnterPhoneText>쿠팡 계정에 등록된 휴대폰번호를 입력해주세요.</EnterPhoneText>
+            </EnterPhoneWrap>
+            <PhoneNumberInputWrap>
+              <PhoneNumberInputBox>
+                <PhoneNumberIconBox />
+                <PhoneNumberInput placeholder="휴대폰번호" />
+              </PhoneNumberInputBox>
+            </PhoneNumberInputWrap>
+            <PhoneNumberLoginButtonWrap>
+              <SendCodeButton>인증번호 발송</SendCodeButton>
+              <HorizonLine></HorizonLine>
+              <SignUpButton>회원가입</SignUpButton>
+            </PhoneNumberLoginButtonWrap>
+            <CoupangBizSignUpWrap>
+              <CoupangBizAskingText>
+                법인 고객이신가요? <br />
+                사업자 회원으로 전용 특가 혜택을 누려보세요.
+              </CoupangBizAskingText>
+              <CoupangBizSignUpText>쿠팡비즈 간편가입 ></CoupangBizSignUpText>
+            </CoupangBizSignUpWrap>
+            <CopyrightWrap>
+              <CopyrightText>©Coupang Corp. All rights reserved.</CopyrightText>
+            </CopyrightWrap>
+          </div>
+        )}
         {activeMethod === "qrcode" && <div className="qrcode"></div>}
       </LoginMethodContentWrap>
     </>
