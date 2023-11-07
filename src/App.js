@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
 import logoPath from "./components/assets/logo.png";
 import newsvgPath from "./components/assets/new.svg";
@@ -9,6 +10,8 @@ import checkboxpngPath from "./components/assets/checkbox.png";
 import callsvgPath from "./components/assets/call.svg";
 import qrpngPath from "./components/assets/QR.png";
 import infosvgPath from "./components/assets/info.svg";
+import showpasswordactivepngPath from "./components/assets/showpasswordactive.png";
+import checkboxactivepngPath from "./components/assets/checkboxactive.png";
 
 const LogoWrap = styled.div`
   display: flex;
@@ -92,6 +95,10 @@ const InputDiv = styled.div`
   height: 48px;
   margin-top: 17px;
   border: 1px solid #ccc;
+
+  &:focus-within {
+    border-bottom: 2px solid #346aff;
+  }
 `;
 
 const EmailInputBox = styled.input`
@@ -162,6 +169,12 @@ const ShowPasswordBox = styled.div`
   background-size: 21px;
   background-position: center;
   background-repeat: no-repeat;
+  &.true {
+    background-image: url(${showpasswordactivepngPath});
+    background-size: 21px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 `;
 
 const CheckBoxAndFindWrap = styled.div`
@@ -178,18 +191,41 @@ const AutoLoginBox = styled.div`
   align-items: center;
 `;
 
-const AutoLogin = styled.input`
-  width: 18px;
-  height: 18px;
-  background-image: url(${checkboxpngPath});
-  cursor: pointer;
-`;
-
-const AutoLoginText = styled.p`
+const AutoLoginText = styled.label`
   font-size: 12px;
   cursor: pointer;
   color: #666;
   margin-left: 2px;
+  display: flex;
+  align-items: center;
+
+  &:before {
+    background-image: url(${checkboxpngPath});
+    background-size: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
+
+  &.true:before {
+    background-image: url(${checkboxactivepngPath});
+    background-size: 18px;
+    background-position: center;
+    background-repeat: no-repeat;
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-left: 2px;
+    cursor: pointer;
+    margin-right: 5px;
+  }
 `;
 
 const FindBox = styled.div`
@@ -312,6 +348,12 @@ const PhoneNumberInputBox = styled.div`
   display: flex;
   align-items: center;
   border-radius: 5px;
+
+  &:focus-within {
+    border: 1px solid #346aff;
+    border-radius: 5px;
+    outline: 3px solid #eaf0ff;
+  }
 `;
 
 const PhoneNumberIconBox = styled.div`
@@ -325,10 +367,12 @@ const PhoneNumberIconBox = styled.div`
 `;
 
 const PhoneNumberInput = styled.input`
-  width: 403px;
+  width: 402px;
   height: 42px;
   border: none;
   color: #212b36;
+  border-radius: 5px;
+  font-size: 16px;
   &::placeholder {
     color: #ccc;
     font-size: 17px;
@@ -336,9 +380,7 @@ const PhoneNumberInput = styled.input`
     letter-spacing: normal;
   }
   &:focus {
-    border: 1px solid #346aff;
-    border-radius: 5px;
-    outline: 3px solid #eaf0ff;
+    outline: none;
   }
 `;
 
@@ -376,6 +418,7 @@ const QRCodeLoginQRWrap = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 10px;
+  flex-direction: column;
 `;
 
 const QRCodeLoginTextTitle = styled.p`
@@ -406,7 +449,6 @@ const QRCodeImage = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   margin-right: 20px;
-  margin-bottom: 40px;
 `;
 
 const QRCodeLoginOTP = styled.div`
@@ -452,8 +494,88 @@ const QRCodeSignUp = styled.button`
   cursor: pointer;
 `;
 
+const EmailErrorMessage = styled.p`
+  color: #e52528;
+  font-size: 12px;
+  padding-top: 2px;
+  font-weight: 500;
+  margin-bottom: 0px;
+  padding-right: 180px;
+  display: ${(props) => (props.show ? "block" : "none")};
+`;
+
+const PWErrorMessage = styled.p`
+  color: #e52528;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 0px;
+  padding-right: 285px;
+  display: ${(props) => (props.show ? "block" : "none")};
+`;
+
+const QRCodeLoginTimeout = styled.p`
+  color: #637381;
+  font-size: 12px;
+  margin-top: 0px;
+  margin-right: 20px;
+`;
+
 function App() {
   const [activeMethod, setActiveMethod] = useState("email");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [emailValid, setEmailValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [autoLogin, setAutoLogin] = useState(false);
+  const [minutes, setMinutes] = useState(3);
+  const [seconds, setSeconds] = useState(0);
+
+  const checkEmailValid = (e) => {
+    const inputValue = e.target.value;
+    const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/;
+    if (inputValue === "" || emailRegex.test(inputValue)) {
+      setEmailValid(true);
+    } else {
+      setEmailValid(false);
+    }
+    setEmail(inputValue);
+  };
+
+  const checkPasswordValid = (e) => {
+    const inputValue = e.target.value;
+    if (inputValue === "" || inputValue.length >= 1) {
+      setPasswordValid(true);
+    } else {
+      setPasswordValid(false);
+    }
+    setPassword(inputValue);
+  };
+
+  const handleShowPasswordToggle = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const handleAutoLoginToggle = () => {
+    setAutoLogin((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+      }
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(countdown);
+        } else {
+          setMinutes(minutes - 1);
+          setSeconds(59);
+        }
+      }
+    }, 1000);
+    return () => clearInterval(countdown);
+  }, [minutes, seconds]);
 
   return (
     <>
@@ -477,17 +599,20 @@ function App() {
           <div className="email">
             <InputDiv>
               <EmailBox />
-              <EmailInputBox type="email" placeholder="아이디(이메일)"></EmailInputBox>
+              <EmailInputBox type="text" placeholder="아이디(이메일)" onChange={checkEmailValid} value={email} />
             </InputDiv>
+            <EmailErrorMessage show={!emailValid}>아이디(이메일)는 이메일 형식으로 입력해주세요.</EmailErrorMessage>
             <InputDiv>
               <PasswordBox />
-              <PasswordInputBox type="password" placeholder="비밀번호"></PasswordInputBox>
-              <ShowPasswordBox />
+              <PasswordInputBox type={showPassword ? "text" : "password"} placeholder="비밀번호" onChange={checkPasswordValid} value={password} />
+              <ShowPasswordBox className={showPassword ? "true" : ""} onClick={handleShowPasswordToggle} />
             </InputDiv>
+            <PWErrorMessage show={!passwordValid}>비밀번호를 입력해주세요.</PWErrorMessage>
             <CheckBoxAndFindWrap>
               <AutoLoginBox>
-                <AutoLogin type="checkbox" />
-                <AutoLoginText>자동 로그인</AutoLoginText>
+                <AutoLoginText className={autoLogin ? "true" : ""} onClick={handleAutoLoginToggle}>
+                  자동 로그인
+                </AutoLoginText>
               </AutoLoginBox>
               <FindBox>
                 <FindText>아이디∙비밀번호 찾기 ></FindText>
@@ -552,6 +677,9 @@ function App() {
               </QRCodeLoginTextWrap>
               <QRCodeLoginQRWrap>
                 <QRCodeImage />
+                <QRCodeLoginTimeout>
+                  남은시간 {minutes}:{seconds < 10 ? `0${seconds}` : seconds}
+                </QRCodeLoginTimeout>
               </QRCodeLoginQRWrap>
             </QRCodeLoginWrap>
             <HorizonLine />
