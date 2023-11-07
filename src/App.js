@@ -7,6 +7,8 @@ import passwordpngPath from "./components/assets/password.png";
 import showpasswordpngPath from "./components/assets/showpassword.png";
 import checkboxpngPath from "./components/assets/checkbox.png";
 import callsvgPath from "./components/assets/call.svg";
+import qrpngPath from "./components/assets/QR.png";
+import infosvgPath from "./components/assets/info.svg";
 
 const LogoWrap = styled.div`
   display: flex;
@@ -79,7 +81,7 @@ const LoginMethodContentWrap = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: row;
+    flex-direction: column;
   }
 `;
 
@@ -363,12 +365,91 @@ const QRCodeLoginTextWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  width: 290px;
+  margin-top: 15px;
+  margin-left: 30px;
 `;
 
 const QRCodeLoginQRWrap = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: 10px;
+`;
+
+const QRCodeLoginTextTitle = styled.p`
+  color: #212b36;
+  font-size: 16px;
+  font-weight: 700;
+  padding-right: 30px;
+  margin-bottom: 0px;
+`;
+
+const QRCodeLoginStepsWrap = styled.ul`
+  padding-left: 0px;
+  margin-bottom: 8px;
+`;
+
+const QRCodeLoginTextSteps = styled.li`
+  list-style-type: decimal;
+  font-size: 13px;
+  color: #454f5b;
+  line-height: 25px;
+`;
+
+const QRCodeImage = styled.div`
+  width: 160px;
+  height: 160px;
+  background-image: url(${qrpngPath});
+  background-size: 160px;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin-right: 20px;
+  margin-bottom: 40px;
+`;
+
+const QRCodeLoginOTP = styled.div`
+  width: 48px;
+  height: 48px;
+  background-color: #f1f4f6;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #212b36;
+  font-size: 20px;
+  font-weight: 700;
+  margin-right: 200px;
+  margin-top: 0px;
+`;
+
+const QRCodeLoginInfo = styled.p`
+  color: #768695;
+  font-size: 12px;
+  background: url(${infosvgPath}) 3px 0.4px/12px no-repeat;
+  padding-left: 18px;
+  margin-right: 20px;
+  margin-top: 15px;
+`;
+
+const QRCodeLoginWrap = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+`;
+
+const QRCodeSignUp = styled.button`
+  width: 448px;
+  height: 54px;
+  border: 1px solid #919eab;
+  color: #454f5b;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
 `;
 
 function App() {
@@ -442,7 +523,7 @@ function App() {
             </PhoneNumberInputWrap>
             <PhoneNumberLoginButtonWrap>
               <SendCodeButton>인증번호 발송</SendCodeButton>
-              <HorizonLine></HorizonLine>
+              <HorizonLine />
               <SignUpButton>회원가입</SignUpButton>
             </PhoneNumberLoginButtonWrap>
             <CoupangBizSignUpWrap>
@@ -457,7 +538,36 @@ function App() {
             </CopyrightWrap>
           </div>
         )}
-        {activeMethod === "qrcode" && <div className="qrcode"></div>}
+        {activeMethod === "qrcode" && (
+          <div className="qrcode">
+            <QRCodeLoginWrap>
+              <QRCodeLoginTextWrap>
+                <QRCodeLoginTextTitle>쿠팡 앱을 통해 바로 로그인하려면 다음 단계에 따라 진행해주세요</QRCodeLoginTextTitle>
+                <QRCodeLoginStepsWrap>
+                  <QRCodeLoginTextSteps>휴대폰 카메라로 QR코드를 스캔하세요.</QRCodeLoginTextSteps>
+                  <QRCodeLoginTextSteps>화면에서 아래의 숫자를 선택하면 로그인됩니다.</QRCodeLoginTextSteps>
+                </QRCodeLoginStepsWrap>
+                <QRCodeLoginOTP>42</QRCodeLoginOTP>
+                <QRCodeLoginInfo>최신 버전의 앱에서만 QR로그인이 가능합니다.</QRCodeLoginInfo>
+              </QRCodeLoginTextWrap>
+              <QRCodeLoginQRWrap>
+                <QRCodeImage />
+              </QRCodeLoginQRWrap>
+            </QRCodeLoginWrap>
+            <HorizonLine />
+            <QRCodeSignUp>회원가입</QRCodeSignUp>
+            <CoupangBizSignUpWrap>
+              <CoupangBizAskingText>
+                법인 고객이신가요? <br />
+                사업자 회원으로 전용 특가 혜택을 누려보세요.
+              </CoupangBizAskingText>
+              <CoupangBizSignUpText>쿠팡비즈 간편가입 ></CoupangBizSignUpText>
+            </CoupangBizSignUpWrap>
+            <CopyrightWrap>
+              <CopyrightText>©Coupang Corp. All rights reserved.</CopyrightText>
+            </CopyrightWrap>
+          </div>
+        )}
       </LoginMethodContentWrap>
     </>
   );
